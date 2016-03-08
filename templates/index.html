@@ -7,6 +7,15 @@
     <style>
       .container {
         max-width: 1000px;
+        position: fixed; /* or absolute */
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: rgba(255,255,255,0.5);
+      }
+
+      body {
+        background-image: url("../static/img/food.jpg");
       }
     </style>
   </head>
@@ -24,6 +33,7 @@
         <h4>{{ error }}</h4>
       {% endfor %}
       <h2>OR</h2>
+      <br>
       <button type="submit" onclick="getLocation()" class="btn btn-control" id="get-location">Get my location!</button>
       <h3 id="demo"></h3>
       <script>

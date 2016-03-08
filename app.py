@@ -3,6 +3,7 @@ import os
 from flask import Flask
 from flask import render_template
 from flask import request
+from flask import jsonify
 from yelp.client import Client
 from yelp.oauth1_authenticator import Oauth1Authenticator
 
@@ -20,11 +21,24 @@ auth = Oauth1Authenticator(
 
 client = Client(auth)
 
-URL = 'https://api.yelp.com/v2/search'
 ################################## LIBRARY #####################################
-def get_food(lat, lon):
-    pass
+def get_food_lat_lon(lat, lon):
+    params = {'term': 'food'}
+    response = client.search_by_coordinates(float(lat), float(lon), **params)
+    restaurants = []
+    for res in response.businesses:
+        restaurants.append({'name': res.name, 'img': res.image_url,
+            'url': res.url})
+    return restaurants
 
+def get_food(location):
+    params = {'term': 'food'}
+    response = client.search(location, **params)
+    restaurants = []
+    for res in response.businesses:
+        restaurants.append({'name': res.name, 'img': res.image_url,
+            'url': res.url})
+    return restaurants
 
 ################################### ROUTES #####################################
 @app.route('/')
@@ -40,20 +54,28 @@ def eat():
         print
         if 'location' in req:
             loc = req['location']
-            print loc
+            if len(loc) is 1:
+                restaurants = get_food(loc[0])
+                return render_template('eat.html', restaurants=restaurants)
         elif 'latitude' in req and 'longitude' in req:
-            print 'do i get here'
             lat = req['latitude']
             lon = req['longitude']
-            print lat, lon
+            if len(lat) is 1 and len(lon) is 1:
+                restaurants = get_food_lat_lon(lat[0], lon[0])
+                return render_template('eat.html', restaurants=restaurants)
     # API GET Request
     else:
         if 'location' in args:
             loc = args['location']
-            print loc
-    return render_template('eat.html')
+            if len(loc) is 1:
+                return jsonify(get_food(loc[0]))
+        elif 'latitude' in args and 'longitude' in args:
+            lat = req['latitude']
+            lon = req['longitude']
+            if len(lat) is 1 and len(lon) is 1:
+                return jsonify(get_food_lat_lon(lat[0], lon[0]))
+
 
 
 if __name__ == '__main__':
-    get_food(u'34.1364537', u'-118.12331379999999')
     app.run()

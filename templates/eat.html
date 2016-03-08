@@ -4,6 +4,11 @@
     <title>Fucking Eat</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link rel="stylesheet" href="..static/css/card-stack.css">
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    <script src="../static/js/swing.js"></script>
+    <script src="../static/js/card-stack.js"></script>
+    <script src="../static/js/classList.js"></script>
     <style>
       .container {
         max-width: 1000px;
@@ -13,6 +18,13 @@
   <body>
     <div class="container">
       <h1>Fucking Eat Away</h1>
+    </div>
+    <div id="viewport">
+        <ul class="stack">
+          {% for res in restaurants %}
+            <li class="res">{{ res.name }}</li>
+          {% endfor %}
+        </ul>
     </div>
     <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
