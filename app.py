@@ -8,6 +8,7 @@ from flask import redirect
 from flask import url_for
 from yelp.client import Client
 from yelp.oauth1_authenticator import Oauth1Authenticator
+from random import shuffle
 
 
 ################################### CONFIG #####################################
@@ -31,6 +32,7 @@ def get_food_lat_lon(lat, lon):
     for res in response.businesses:
         restaurants.append({'name': res.name, 'img': res.image_url,
             'url': res.url})
+    shuffle(restaurants)
     return restaurants
 
 def get_food(location):
@@ -40,6 +42,7 @@ def get_food(location):
     for res in response.businesses:
         restaurants.append({'name': res.name, 'img': res.image_url,
             'url': res.url})
+    shuffle(restaurants)
     return restaurants
 
 ################################### ROUTES #####################################
