@@ -43,7 +43,7 @@ def get_food(location):
 ################################### ROUTES #####################################
 @app.route('/')
 def index():
-    return render_template('index.html', SITE_ADDRESS=os.environ['SITE_ADDRESS'])
+    return render_template('index.html')
 
 @app.route('/eat', methods=['GET', 'POST'])
 def eat():
