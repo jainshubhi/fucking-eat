@@ -61,16 +61,14 @@ def eat():
             if len(loc) is 1 and loc[0] != u'':
                 restaurants = get_food(loc[0])
                 return render_template('eat.html', restaurants=restaurants)
-            else:
-                return redirect(url_for('index'))
+            return redirect(url_for('index'))
         elif 'latitude' in req and 'longitude' in req:
             lat = req['latitude']
             lon = req['longitude']
             if len(lat) is 1 and len(lon) is 1 and lat[0] != u'':
                 restaurants = get_food_lat_lon(lat[0], lon[0])
                 return render_template('eat.html', restaurants=restaurants)
-            else:
-                return redirect(url_for('index'))
+            return redirect(url_for('index'))
     # API GET Request
     else:
         if 'location' in args:
