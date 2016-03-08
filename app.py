@@ -54,8 +54,6 @@ def index():
 def eat():
     req = dict(request.form)
     args = dict(request.args)
-    if req is None and args is None:
-        return redirect(url_for('index'))
     # POST Request from form
     if request.method == 'POST':
         if 'location' in req:
@@ -78,12 +76,14 @@ def eat():
         if 'location' in args:
             loc = args['location']
             if len(loc) is 1:
-                return jsonify(get_food(loc[0]))
+                return jsonify({'restaurants': get_food(loc[0])})
         elif 'latitude' in args and 'longitude' in args:
             lat = req['latitude']
             lon = req['longitude']
             if len(lat) is 1 and len(lon) is 1:
-                return jsonify(get_food_lat_lon(lat[0], lon[0]))
+                return jsonify({'restaurants': get_food_lat_lon(lat[0], lon[0])})
+        else:
+            return redirect(url_for('index'))
 
 
 
