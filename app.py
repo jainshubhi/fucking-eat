@@ -1,4 +1,5 @@
 import os
+import requests
 
 from flask import Flask
 from flask import render_template
@@ -10,6 +11,8 @@ from yelp.client import Client
 from yelp.oauth1_authenticator import Oauth1Authenticator
 from random import shuffle
 from datetime import datetime
+from bs4 import BeautifulSoup
+
 
 
 ################################### CONFIG #####################################
@@ -65,10 +68,17 @@ def get_food(location, hours=datetime.now().hour):
     shuffle(restaurants)
     return restaurants
 
+def get_food_porn():
+    url='http://foodporndaily.com/'
+    data  = requests.get(url).text
+    soup = BeautifulSoup(data, "html.parser")
+    return soup.find("img", {"id": "mainPhoto"})['src']
+
+
 ################################### ROUTES #####################################
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', background_img=get_food_porn())
 
 @app.route('/eat', methods=['GET', 'POST'])
 def eat():
