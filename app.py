@@ -10,6 +10,7 @@ from flask import url_for
 from yelp.client import Client
 from yelp.oauth1_authenticator import Oauth1Authenticator
 from random import shuffle
+from random import choice
 from datetime import datetime
 from bs4 import BeautifulSoup
 
@@ -19,6 +20,7 @@ from bs4 import BeautifulSoup
 app = Flask(__name__)
 app.config.from_object(os.environ['APP_SETTINGS'])
 
+# Yelp OAuth
 auth = Oauth1Authenticator(
     consumer_key=os.environ['CONSUMER_KEY'],
     consumer_secret=os.environ['CONSUMER_SECRET'],
@@ -30,7 +32,9 @@ client = Client(auth)
 
 ################################## LIBRARY #####################################
 def food_time(hours):
-    # Brunch
+    '''
+    Based on time of day of request, search term differs
+    '''
     if hours < 12 and hours > 4:
         return 'brunch'
     elif hours >= 12 and hours <= 15:
@@ -69,11 +73,13 @@ def get_food(location, hours=datetime.now().hour):
     return restaurants
 
 def get_food_porn():
+    '''
+    Grab background image using a scraper
+    '''
     url='http://foodporndaily.com/'
     data  = requests.get(url).text
     soup = BeautifulSoup(data, "html.parser")
     return soup.find("img", {"id": "mainPhoto"})['src']
-
 
 ################################### ROUTES #####################################
 @app.route('/')
@@ -88,6 +94,7 @@ def eat():
     if request.method == 'POST':
         if 'location' in req:
             loc = req['location']
+            # Grab time
             hours = req['time'][0].split(':')[0][-2:]
             if len(loc) is 1 and loc[0] != u'':
                 restaurants = get_food(loc[0], hours=int(hours))
@@ -96,6 +103,7 @@ def eat():
         elif 'latitude' in req and 'longitude' in req:
             lat = req['latitude']
             lon = req['longitude']
+            # Grab time
             hours = req['time'][0].split(':')[0][-2:]
             if len(lat) is 1 and len(lon) is 1 and lat[0] != u'':
                 restaurants = get_food_lat_lon(lat[0], lon[0], hours=int(hours))
@@ -106,12 +114,12 @@ def eat():
         if 'location' in args:
             loc = args['location']
             if len(loc) is 1:
-                return jsonify({'restaurants': get_food(loc[0])})
+                return jsonify(choice(get_food(loc[0])))
         elif 'latitude' in args and 'longitude' in args:
             lat = req['latitude']
             lon = req['longitude']
             if len(lat) is 1 and len(lon) is 1:
-                return jsonify({'restaurants': get_food_lat_lon(lat[0], lon[0])})
+                return jsonify(choice(get_food_lat_lon(lat[0], lon[0])))
         else:
             return redirect(url_for('index'))
 
