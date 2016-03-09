@@ -24,7 +24,7 @@ input {
 }
 
 #viewport {
-    width: 500px; height: 500px; background: #C7433E; border: 10px solid #ED5D52; margin: 100px auto 0; position: relative;
+    width: 50%; height: 500px; background: #C7433E; border: 10px solid #ED5D52; margin: 100px auto 0; position: relative;
 }
 
 #viewport .stack {

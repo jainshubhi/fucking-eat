@@ -9,6 +9,7 @@ from flask import url_for
 from yelp.client import Client
 from yelp.oauth1_authenticator import Oauth1Authenticator
 from random import shuffle
+from datetime import datetime
 
 
 ################################### CONFIG #####################################
@@ -25,8 +26,23 @@ auth = Oauth1Authenticator(
 client = Client(auth)
 
 ################################## LIBRARY #####################################
-def get_food_lat_lon(lat, lon):
-    params = {'term': 'food'}
+def food_time(hours):
+    # Brunch
+    if hours < 12 and hours > 4:
+        return 'brunch'
+    elif hours >= 12 and hours <= 15:
+        return 'lunch'
+    elif hours >= 16 and hours <= 22:
+        return 'dinner'
+    else:
+        return 'food'
+
+def get_food_lat_lon(lat, lon, hours=0):
+    '''
+    Make yelp business search call based on lat, lon.
+    '''
+    # Make the search term different based on time of day
+    params = {'term': food_time(hours)}
     response = client.search_by_coordinates(float(lat), float(lon), **params)
     restaurants = []
     for res in response.businesses:
@@ -35,7 +51,11 @@ def get_food_lat_lon(lat, lon):
     shuffle(restaurants)
     return restaurants
 
-def get_food(location):
+def get_food(location, hours=datetime.now().hour):
+    '''
+    Make yelp business search call based on location.
+    '''
+    # Make the search term different based on time of day
     params = {'term': 'food'}
     response = client.search(location, **params)
     restaurants = []
@@ -58,15 +78,17 @@ def eat():
     if request.method == 'POST':
         if 'location' in req:
             loc = req['location']
+            hours = req['time'][0].split(':')[0][-2:]
             if len(loc) is 1 and loc[0] != u'':
-                restaurants = get_food(loc[0])
+                restaurants = get_food(loc[0], hours=int(hours))
                 return render_template('eat.html', restaurants=restaurants)
             return redirect(url_for('index'))
         elif 'latitude' in req and 'longitude' in req:
             lat = req['latitude']
             lon = req['longitude']
+            hours = req['time'][0].split(':')[0][-2:]
             if len(lat) is 1 and len(lon) is 1 and lat[0] != u'':
-                restaurants = get_food_lat_lon(lat[0], lon[0])
+                restaurants = get_food_lat_lon(lat[0], lon[0], hours=int(hours))
                 return render_template('eat.html', restaurants=restaurants)
             return redirect(url_for('index'))
     # API GET Request

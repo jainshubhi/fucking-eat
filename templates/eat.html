@@ -21,8 +21,11 @@
     <div id="viewport">
         <ul class="stack">
           {% for res in restaurants %}
-            <li class="res" style="font-size:medium;">{{ res.name }}</li>
+            <li class="res" style="font-size:medium; background-image: url("{{res.img}}");">{{ res.name }}</li>
           {% endfor %}
+          <!-- Make a card the whole page and have two buttons (yes, no) on the
+          bottom. No throws the card to the left and Yes throws the card to the
+          right. When yes, redirect to yelp page. -->
         </ul>
     </div>
     <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>

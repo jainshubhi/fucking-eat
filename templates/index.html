@@ -25,6 +25,10 @@
       <form role="form" method='POST' id="location-form" action='/eat'>
         <div class="form-group">
           <input type="text" name="location" class="form-control" id="location-box" placeholder="Enter your Location..." style="max-width: 300px;">
+          <input type="hidden" id="time" name="time"/>
+          <script type="text/javascript">
+              document.getElementById("time").value = Date();
+          </script>
         </div>
         <button type="submit" id="search" class="btn btn-default">Search for a place</button>
       </form>
@@ -66,7 +70,7 @@
           function getLocation() {
               if (navigator.geolocation) {
                   navigator.geolocation.getCurrentPosition(function(position) {
-                      post('/eat', {"latitude": position.coords.latitude, "longitude": position.coords.longitude});
+                      post('/eat', {"latitude": position.coords.latitude, "longitude": position.coords.longitude, "time": Date()});
                   });
               } else {
                   x.innerHTML = "Geolocation is not supported by this browser.";
