@@ -76,8 +76,8 @@ def get_food_porn():
     '''
     Grab background image using a scraper
     '''
-    url='http://foodporndaily.com/'
-    data  = requests.get(url).text
+    url = 'http://foodporndaily.com/'
+    data = requests.get(url).text
     soup = BeautifulSoup(data, "html.parser")
     return soup.find("img", {"id": "mainPhoto"})['src']
 
