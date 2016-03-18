@@ -58,12 +58,12 @@ def get_food_lat_lon(lat, lon, hours=0):
     shuffle(restaurants)
     return restaurants
 
-def get_food(location, hours=datetime.now().hour):
+def get_food(location, hours=0):
     '''
     Make yelp business search call based on location.
     '''
     # Make the search term different based on time of day
-    params = {'term': 'food'}
+    params = {'term': food_time(hours)}
     response = client.search(location, **params)
     restaurants = []
     for res in response.businesses:
